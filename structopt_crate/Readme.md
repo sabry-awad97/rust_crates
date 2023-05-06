@@ -207,3 +207,49 @@ fn main() {
 ```
 
 In this example, the `port` field is annotated with `#[structopt(env = "MYAPP_PORT")]`. This tells `structopt` to try to populate the `port` field from the `MYAPP_PORT` environment variable.
+
+### Parsing options from files
+
+`structopt` can also read options from files using the `from_os_str` method. This can be useful if you have a long list of command line options that you want to store in a file.
+
+```rust
+use std::ffi::OsString;
+use std::fs::File;
+use std::io::{BufRead, BufReader};
+use std::path::PathBuf;
+use structopt::StructOpt;
+
+#[derive(StructOpt)]
+struct Opt {
+    #[structopt(long = "config", parse(from_os_str))]
+    config_file: Option<PathBuf>,
+    #[structopt(long)]
+    foo: bool,
+}
+
+fn main() {
+    let opt = Opt::from_args();
+
+    if let Some(config_file) = opt.config_file {
+        let file = File::open(config_file).expect("failed to open config file");
+        let reader = BufReader::new(file);
+
+        let mut args = vec![OsString::from("myapp")];
+        for line in reader.lines() {
+            let line = line.expect("failed to read config file");
+            for arg in line.split_whitespace() {
+                args.push(OsString::from(arg));
+            }
+        }
+
+        let opt_from_file = Opt::from_iter(args);
+        println!("opt from file: {:?}", opt_from_file);
+    }
+
+    println!("foo: {}", opt.foo);
+}
+```
+
+In this example, the `Opt` struct defines a `config_file` field annotated with `#[structopt(long = "config", parse(from_os_str))]`. This tells `structopt` to parse the `--config` option as a `PathBuf` and use the `from_os_str` method to convert it from an OS string to a `PathBuf`.
+
+In the `main` function, if the `--config` option is present, the program reads the options from the specified file and constructs a new `Opt` object using the `from_iter` method.
