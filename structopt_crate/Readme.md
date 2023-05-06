@@ -186,3 +186,24 @@ fn main() {
 ```
 
 In this example, the `Opt` struct defines a custom `help` function that returns the string "My custom help message.". When the user passes the `-h` or `--help` flag, this custom help message will be displayed instead of the default help message.
+
+### Setting environment variables
+
+`structopt` can automatically populate values from environment variables using the `env` attribute. To use this feature, add the `env` attribute to a field in your struct definition and specify the name of the environment variable.
+
+```rust
+use structopt::StructOpt;
+
+#[derive(StructOpt)]
+struct Opt {
+    #[structopt(env = "MYAPP_PORT")]
+    port: u16,
+}
+
+fn main() {
+    let opt = Opt::from_args();
+    println!("port: {}", opt.port);
+}
+```
+
+In this example, the `port` field is annotated with `#[structopt(env = "MYAPP_PORT")]`. This tells `structopt` to try to populate the `port` field from the `MYAPP_PORT` environment variable.
