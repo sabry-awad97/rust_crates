@@ -48,3 +48,13 @@ struct Cli {
 Here, we define a `struct` called `Cli` with two fields: `file_path` and `verbose`. The `file_path` field is of type `PathBuf`, which is a type provided by the standard library for working with file paths. We use the `parse(from_os_str)` attribute to tell `structopt` to parse the argument as a file path.
 
 The `verbose` field is a boolean flag that can be enabled by using the `-v` or `--verbose` command line option.
+
+## Using the Generated `structopt` Code to Parse Command Line Arguments and Options
+
+Once we have defined our `Cli` `struct`, we can use `structopt` to parse the command line arguments and options. This is done by calling the `from_args` method on our `Cli` `struct`.
+
+```rust
+let args = Cli::from_args();
+```
+
+This will parse the command line arguments and options and store them in a new `Cli` instance called `args`.
