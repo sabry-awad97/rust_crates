@@ -110,9 +110,11 @@ Here, we define an `enum` called `Cli` with two variants: `Add` and `Remove`. Ea
 
 Finally, we can define boolean flags using the `short` and `long` attributes. The `short` attribute defines a short one-letter option (e.g., `-v`), while the `long` attribute defines a longer option (e.g., `--verbose`).
 
-### Advanced usage and customization of the `structopt` crate
+## Advanced usage and customization of the `structopt` crate
 
 `structopt` provides many customization options, such as customizing the help message or defining custom parsing logic. The `structopt` documentation provides a comprehensive guide on all the available options.
+
+### Customizing validation rules
 
 One useful customization is defining custom validation rules for options and arguments. We can use the `validator` attribute to define a function that validates the value of an option or argument. For example, we can define a custom validator for the `--age` option that checks that the age is a positive integer:
 
@@ -137,3 +139,50 @@ If we pass a negative integer for the `--age` option, we get an error message:
 $ cargo run -- --age=-1
 error: The value '-1' of argument '--age <age>' is invalid: Age must be a positive integer
 ```
+
+### Customizing help messages
+
+`structopt` provides a built-in help message that can be displayed when the user passes the `-h` or `--help` flag. The default help message includes information about the program name, usage, options, and subcommands.
+
+However, you can customize the help message by defining a custom `help` function on your `#[derive(StructOpt)]`-annotated struct. This function takes no arguments and returns a string, which is the custom help message that will be displayed instead of the default help message.
+
+```rust
+use structopt::StructOpt;
+
+#[derive(StructOpt)]
+#[structopt(name = "myapp", about = "An example app.")]
+struct Opt {
+    #[structopt(long, help = "Sets the verbosity level")]
+    verbose: bool,
+
+    #[structopt(subcommand)]
+    cmd: Command,
+}
+
+#[derive(StructOpt)]
+enum Command {
+    #[structopt(name = "foo", about = "Do foo")]
+    Foo {
+        #[structopt(help = "The input file")]
+        input: String,
+    },
+    #[structopt(name = "bar", about = "Do bar")]
+    Bar {
+        #[structopt(help = "The output file")]
+        output: String,
+    },
+}
+
+impl Opt {
+    fn help() -> &'static str {
+        "My custom help message."
+    }
+}
+
+fn main() {
+    let opt = Opt::from_args();
+    println!("{:?}", opt);
+}
+```
+
+In this example, the `Opt` struct defines a custom `help` function that returns the string "My custom help message.". When the user passes the `-h` or `--help` flag, this custom help message will be displayed instead of the default help message.
