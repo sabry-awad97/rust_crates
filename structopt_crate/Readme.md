@@ -253,3 +253,11 @@ fn main() {
 In this example, the `Opt` struct defines a `config_file` field annotated with `#[structopt(long = "config", parse(from_os_str))]`. This tells `structopt` to parse the `--config` option as a `PathBuf` and use the `from_os_str` method to convert it from an OS string to a `PathBuf`.
 
 In the `main` function, if the `--config` option is present, the program reads the options from the specified file and constructs a new `Opt` object using the `from_iter` method.
+
+### Other customization options
+
+The `structopt` crate provides many other options for customizing the behavior of the command line parser. Here are a few examples:
+
+- You can customize the version string by defining a `version` function on your `#[derive(StructOpt)]`-annotated struct.
+- You can customize the way that default values are displayed in the help message by defining a `default_value` function on your `#[derive(StructOpt)]`-annotated struct.
+- You can customize the way that enums are displayed in the help message by defining a `display_order` function on your `#[derive(StructOpt)]`-annotated enum.
