@@ -295,3 +295,41 @@ pub struct Args {
 ```
 
 In this example, `ripgrep` defines a top-level `Args` struct using the `#[derive(Debug, StructOpt)]` attribute. This struct contains several sub-structs, each defined using the `#[structopt(flatten)]` attribute, which indicates that the fields in the sub-struct should be flattened into the parent struct.
+
+### `bat`
+
+`bat` is another popular command line tool built using Rust. It is a cat clone with syntax highlighting and Git integration. Like `ripgrep`, `bat` uses `structopt` for parsing command line arguments and options.
+
+Here is an example of how `structopt` is used in `bat` to define command line options and arguments:
+
+```rust
+#[derive(Debug, StructOpt)]
+#[structopt(
+    name = "bat",
+    author = "",
+    about = "A cat(1) clone with syntax highlighting and Git integration.",
+    version_short = "v",
+    rename_all = "kebab-case"
+)]
+pub struct CliArgs {
+    /// Display the version
+    #[structopt(short = "V", long = "version")]
+    pub version: bool,
+
+    /// Files to display
+    #[structopt(parse(from_os_str))]
+    pub files: Vec<PathBuf>,
+
+    /// Number the output lines, starting at 1
+    #[structopt(short = "n", long = "number")]
+    pub number: bool,
+
+    /// Number the output lines, starting at 1, using a delimiter
+    #[structopt(long = "number-width")]
+    pub number_width: Option<usize>,
+
+    // ...
+}
+```
+
+In this example, `bat` defines a top-level `CliArgs` struct using the `#[derive(Debug, StructOpt)]` attribute. This struct contains several fields, each defined using the `#[structopt()]` attribute with various options.
