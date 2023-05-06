@@ -58,3 +58,54 @@ let args = Cli::from_args();
 ```
 
 This will parse the command line arguments and options and store them in a new `Cli` instance called `args`.
+
+## Handling Required and Optional Arguments, Subcommands, and Boolean Flags with `structopt`
+
+`structopt` provides a number of ways to handle different types of command line arguments and options. For example, we can define required and optional arguments using the `required` and `default_value` attributes, respectively.
+
+```rust
+use std::path::PathBuf;
+use structopt::StructOpt;
+#[derive(StructOpt)]
+struct Cli {
+    #[structopt(parse(from_os_str), required = true)]
+    file_path: PathBuf,
+
+    #[structopt(short, long, default_value = "false")]
+    verbose: bool,
+}
+```
+
+Here, we use the `required = true` attribute to make the `file_path` argument required, and the `default_value = "false"` attribute to set the default value of the `verbose` flag to `false`.
+
+We can also define subcommands by defining nested `structs`. For example, let's say we want to create a program with two subcommands: `add` and `remove`. We can define our `Cli` `struct` like this:
+
+```rust
+use std::path::PathBuf;
+use structopt::StructOpt;
+
+#[derive(StructOpt)]
+enum Cli {
+    #[structopt(name = "add")]
+    Add {
+        #[structopt(parse(from_os_str), required = true)]
+        file_path: PathBuf,
+
+        #[structopt(short, long)]
+        verbose: bool,
+    },
+
+    #[structopt(name = "remove")]
+    Remove {
+        #[structopt(parse(from_os_str), required = true)]
+        file_path: PathBuf,
+
+        #[structopt(short, long)]
+        force: bool,
+    },
+}
+```
+
+Here, we define an `enum` called `Cli` with two variants: `Add` and `Remove`. Each variant has its own set of command line options and arguments.
+
+Finally, we can define boolean flags using the `short` and `long` attributes. The `short` attribute defines a short one-letter option (e.g., `-v`), while the `long` attribute defines a longer option (e.g., `--verbose`).
