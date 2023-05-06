@@ -261,3 +261,37 @@ The `structopt` crate provides many other options for customizing the behavior o
 - You can customize the version string by defining a `version` function on your `#[derive(StructOpt)]`-annotated struct.
 - You can customize the way that default values are displayed in the help message by defining a `default_value` function on your `#[derive(StructOpt)]`-annotated struct.
 - You can customize the way that enums are displayed in the help message by defining a `display_order` function on your `#[derive(StructOpt)]`-annotated enum.
+
+## Real-world examples
+
+Now that we've covered the basics of using `structopt`, let's take a look at some real-world examples of Rust applications that use `structopt`.
+
+### `ripgrep`
+
+`ripgrep` is a popular command line tool for searching files for patterns. It is built using Rust and uses `structopt` for parsing command line arguments and options.
+
+Here is an example of how `structopt` is used in `ripgrep` to define command line options and arguments:
+
+```rust
+#[derive(Debug, StructOpt)]
+#[structopt(
+    name = "rg",
+    about = "ripgrep recursively searches directories for a regex pattern",
+    version = env!("CARGO_PKG_VERSION")
+)]
+pub struct Args {
+    #[structopt(flatten)]
+    pub search: SearchArgs,
+
+    #[structopt(flatten)]
+    pub output: OutputArgs,
+
+    #[structopt(flatten)]
+    pub paths: PathArgs,
+
+    #[structopt(flatten)]
+    pub misc: MiscArgs,
+}
+```
+
+In this example, `ripgrep` defines a top-level `Args` struct using the `#[derive(Debug, StructOpt)]` attribute. This struct contains several sub-structs, each defined using the `#[structopt(flatten)]` attribute, which indicates that the fields in the sub-struct should be flattened into the parent struct.
