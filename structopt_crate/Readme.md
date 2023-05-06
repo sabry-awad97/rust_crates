@@ -18,3 +18,9 @@ To use `structopt` in your Rust project, you first need to add it to your `Cargo
 [dependencies]
 structopt = "0.3.26"
 ```
+
+Once you have added `structopt` to your dependencies, you can use it in your Rust code by adding the following `use` statement:
+
+```rust
+use structopt::StructOpt;
+```
