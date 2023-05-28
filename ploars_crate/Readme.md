@@ -22,3 +22,32 @@ polars = "0.29.0"
 ```rust
 use polars::prelude::*;
 ```
+
+## Creating a Polars DataFrame
+
+- A DataFrame is a tabular data structure consisting of rows and columns.
+- To create a new DataFrame, you can use the `DataFrame::new()` function:
+
+```rs
+fn main() -> Result<(), PolarsError> {
+    let df = DataFrame::new(vec![Series::new_empty("column1", &DataType::Float32)])?;
+    println!("{}", df);
+    Ok(())
+}
+```
+
+- In this example, we create an empty DataFrame with a single column named "column1".
+
+## Loading Data into a DataFrame
+
+- Polars provides various methods to load data into a DataFrame, such as from CSV files or in-memory collections.
+- To load data from a CSV file, you can use the `CsvReader`:
+
+```rs
+let df = CsvReader::from_path("data.csv")?
+    .infer_schema(None)
+    .has_header(true)
+    .finish()?;
+```
+
+- In this example, we load data from a CSV file called "data.csv" and infer the schema automatically.
