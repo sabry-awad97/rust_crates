@@ -63,3 +63,14 @@ let df = CsvReader::from_path("data.csv")?
   ```
 
 - This example selects columns "column1" and "column2" from the DataFrame `df`.
+
+### Filtering Rows
+
+- To filter rows based on certain conditions, you can use the `filter` method:
+
+  ```rs
+  let mask = df.column("column1")?.gt(10)?;
+  let filtered_df = df.filter(&mask)?;
+  ```
+
+- This example filters rows where the value in "column1" is greater than 10.

@@ -6,7 +6,8 @@ fn main() -> Result<(), PolarsError> {
         .has_header(true)
         .finish()?;
 
-    let selected_df = df.select(&["Name", "Age"])?;
-    println!("{}", selected_df);
+    let mask = df.column("Age")?.gt(40)?;
+    let filtered_df = df.filter(&mask)?;
+    println!("{}", filtered_df);
     Ok(())
 }
