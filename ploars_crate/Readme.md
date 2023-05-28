@@ -74,3 +74,14 @@ let df = CsvReader::from_path("data.csv")?
   ```
 
 - This example filters rows where the value in "column1" is greater than 10.
+
+### Adding and Modifying Columns
+
+- To add or modify columns in a DataFrame, you can use the `with_column` method:
+
+  ```rs
+  let s = Series::new("new_column", [1, 2, 3, 4, 5]);
+  let modified_df = df.with_column(s);
+  ```
+
+- This example adds a new column "new_column" to the df.
