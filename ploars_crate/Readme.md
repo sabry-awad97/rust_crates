@@ -286,3 +286,20 @@ The resulting melted DataFrame `melted_df` will look like this:
 | Charlie | Income | 70000 |
 
 In this example, the columns "Gender", "Age", and "Income" are melted into a single column named "variable", and their corresponding values are captured in the "value" column.
+
+## Data Type Conversion
+
+Data Type Conversion refers to the process of changing the data type of a column in a DataFrame. Polars provides methods to convert the data types of DataFrame columns, allowing you to transform the data to a format that is suitable for your analysis or computations.
+
+Converting data types can be useful when you need to perform calculations or operations that require specific data types, or when you want to ensure consistency and compatibility between columns.
+
+To perform data type conversion in Polars, you can use the `cast` method. The `cast` method allows you to specify the target data type for a column. Here's an example:
+
+```rs
+let converted_df = df
+    .lazy()
+    .select(&[col("column2").cast(DataType::Int32)])
+    .collect()?;
+```
+
+It's important to note that data type conversion may result in data loss or unexpected behavior if the conversion is not compatible or if the data contains values that cannot be converted. Therefore, it's recommended to handle data type conversion with caution and ensure that the conversion is appropriate for your data and analysis.

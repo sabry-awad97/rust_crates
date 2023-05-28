@@ -1,16 +1,14 @@
 use polars::prelude::*;
 
 fn main() -> Result<(), PolarsError> {
-    let df = df!(
-        "Customer" => ["Alice", "Bob", "Charlie"],
-        "Gender" => ["Female", "Male", "Male"],
-        "Age" => [25, 30, 35],
-        "Income" => [50000, 60000, 70000]
-    )?;
-
-    let melted_df = df.melt(&["Customer"], &["Gender", "Age", "Income"])?;
-
-    println!("{}", df);
-    println!("{}", melted_df);
+    let df = DataFrame::new(vec![
+        Series::new("column1", &[1, 2, 3]),
+        Series::new("column2", &["4", "5", "6"]),
+    ])?;
+    let converted_df = df
+        .lazy()
+        .select(&[col("column2").cast(DataType::Int32)])
+        .collect()?;
+    println!("{}", converted_df);
     Ok(())
 }
