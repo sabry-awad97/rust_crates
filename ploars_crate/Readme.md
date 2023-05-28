@@ -160,3 +160,31 @@ let column_filled = selected_columns.fill_null(FillNullStrategy::Zero)?;
 let df_filled = df.with_column(column_filled)?;
 println!("DataFrame after filling nulls:\n{:?}", df_filled);
 ```
+
+## Applying Functions to Columns
+
+### Applying a Closure
+
+```rs
+let mut df = DataFrame::new(vec![
+    Series::new("column1", &[1, 2, 3]),
+    Series::new("column2", &[2, 4, 6]),
+])?;
+
+df.apply("column1", |value| value * 2)?;
+```
+
+### Applying a Predefined Function
+
+```rs
+fn square(x: &Series) -> Series {
+    x * x
+}
+
+let mut df = DataFrame::new(vec![
+    Series::new("column1", &[1, 2, 3]),
+    Series::new("column2", &[4, 5, 6]),
+])?;
+
+df.apply("column1", square)?;
+```
