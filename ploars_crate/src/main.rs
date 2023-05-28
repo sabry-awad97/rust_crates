@@ -5,6 +5,8 @@ fn main() -> Result<(), PolarsError> {
         .infer_schema(None)
         .has_header(true)
         .finish()?;
-    println!("{}", df);
+
+    let selected_df = df.select(&["Name", "Age"])?;
+    println!("{}", selected_df);
     Ok(())
 }

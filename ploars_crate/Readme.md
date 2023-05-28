@@ -51,3 +51,15 @@ let df = CsvReader::from_path("data.csv")?
 ```
 
 - In this example, we load data from a CSV file called "data.csv" and infer the schema automatically.
+
+## DataFrame Operations
+
+### Selecting Columns
+
+- To select specific columns from a DataFrame, you can use the `select` method:
+
+  ```rs
+  let selected_df = df.select(&["column1", "column2"])?;
+  ```
+
+- This example selects columns "column1" and "column2" from the DataFrame `df`.
