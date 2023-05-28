@@ -1,19 +1,24 @@
 use polars::prelude::*;
 
 fn main() -> Result<(), PolarsError> {
-    let df1 = df!(
-        "ID" => &[1, 2, 3, 4],
-        "Name" => &["John", "Emma", "Adam", "Emily"],
-        "Department" => &["Digital Marketing", "Human Resources", "Finance", "Operations"]
-    )?;
+    let mut df = CsvReader::from_path("missing.csv")?
+        .infer_schema(None)
+        .has_header(true)
+        .finish()?;
 
-    let df2 = df!(
-        "ID" => &[1, 2, 3, 5],
-        "Salary" => &[5000, 4500, 6000, 5500]
-    )?;
+    println!("{}", df);
 
-    let joined_df: DataFrame = df1.join(&df2, ["ID"], ["ID"], JoinType::Inner, None)?;
+    // Check if there are null values
+    println!("Null values: \n{}", df.null_count());
 
-    println!("{}", joined_df);
+    // Drops rows with any null value
+    let df_without_nulls = df.drop_nulls::<String>(None)?;
+    println!("DataFrame after dropping nulls:\n{:?}", df_without_nulls);
+
+    // Fill null values with a default value
+    let selected_columns = df.column("Age")?;
+    let column_filled = selected_columns.fill_null(FillNullStrategy::Zero)?;
+    let df_filled = df.with_column(column_filled)?;
+    println!("DataFrame after filling nulls:\n{:?}", df_filled);
     Ok(())
 }

@@ -139,3 +139,24 @@ let df = CsvReader::from_path("data.csv")?
   ```
 
 - This example performs an inner join between `df1` and `df2` on "ID" from the left DataFrame and "ID" from the right DataFrame.
+
+## Data Manipulation and Transformation
+
+### Handling Missing Data
+
+- Polars provides methods to handle missing data, such as `drop_nulls`, `fill_null`, or `null_count`.
+
+```rs
+// Check if there are null values
+println!("Null values: \n{}", df.null_count());
+
+// Drops rows with any null value
+let df_without_nulls = df.drop_nulls::<String>(None)?;
+println!("DataFrame after dropping nulls:\n{:?}", df_without_nulls);
+
+// Fill null values with a default value
+let selected_columns = df.column("Age")?;
+let column_filled = selected_columns.fill_null(FillNullStrategy::Zero)?;
+let df_filled = df.with_column(column_filled)?;
+println!("DataFrame after filling nulls:\n{:?}", df_filled);
+```
