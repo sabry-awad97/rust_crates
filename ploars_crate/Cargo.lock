@@ -838,6 +838,7 @@ name = "ploars_crate"
 version = "0.1.0"
 dependencies = [
  "polars",
+ "polars-ops",
 ]
 
 [[package]]

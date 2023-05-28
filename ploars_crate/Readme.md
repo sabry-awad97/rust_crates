@@ -188,3 +188,59 @@ let mut df = DataFrame::new(vec![
 
 df.apply("column1", square)?;
 ```
+
+## Reshaping DataFrames
+
+- Polars offers functions like pivot and melt for reshaping DataFrames.
+
+### Pivot Operation
+
+- The pivot operation in Polars allows you to reshape a DataFrame by converting unique values from one column into multiple columns.
+- It is particularly useful when you want to transform long-format data into wide-format data.
+
+- Suppose you have the following DataFrame `df` representing sales data:
+  | Region | Year | Quarter | Sales |
+  | ------ | ---- | ------- | ----- |
+  | East | 2019 | Q1 | 100 |
+  | East | 2019 | Q2 | 150 |
+  | East | 2020 | Q1 | 200 |
+  | West | 2019 | Q1 | 120 |
+  | West | 2019 | Q2 | 180 |
+  | West | 2020 | Q1 | 220 |
+  To pivot the DataFrame based on the "Quarter" column, with "Year" as the new column names and "Sales" as the new column values, you can use the pivot operation:
+
+  ```rs
+  use polars::prelude::*;
+  use polars_ops::pivot::{pivot, PivotAgg};
+
+  fn main() -> Result<(), PolarsError> {
+      let df = df!(
+          "Region" => &["East", "East", "East", "West", "West", "West"],
+          "Year" => &[2019, 2019, 2020, 2019, 2019, 2020],
+          "Quarter" => &["Q1", "Q2", "Q1", "Q1", "Q2", "Q1"],
+          "Sales" => &[100, 150, 200, 120, 180, 220],
+      )?;
+
+      let pivoted_df = pivot(
+          &df,
+          ["Sales"],
+          ["Quarter"],
+          ["Year"],
+          true,
+          Some(PivotAgg::Sum),
+          None,
+      )?;
+
+      println!("{}", df);
+      println!("{}", pivoted_df);
+      Ok(())
+  }
+  ```
+
+  The resulting pivoted DataFrame `pivoted_df` will look like this:
+  | Quarter | 2019 | 2020 |
+  | ------- | ---- | ---- |
+  | Q1 | 220 | 420 |
+  | Q2 | 330 | null |
+
+  In this example, the unique values from the "Quarter" column become the column names in the pivoted DataFrame, with corresponding values from the "Sales" column.

@@ -1,17 +1,25 @@
 use polars::prelude::*;
-
-fn square(x: &Series) -> Series {
-    x * x
-}
+use polars_ops::pivot::{pivot, PivotAgg};
 
 fn main() -> Result<(), PolarsError> {
-    let mut df = DataFrame::new(vec![
-        Series::new("column1", &[1, 2, 3]),
-        Series::new("column2", &[4, 5, 6]),
-    ])?;
+    let df = df!(
+        "Region" => &["East", "East", "East", "West", "West", "West"],
+        "Year" => &[2019, 2019, 2020, 2019, 2019, 2020],
+        "Quarter" => &["Q1", "Q2", "Q1", "Q1", "Q2", "Q1"],
+        "Sales" => &[100, 150, 200, 120, 180, 220],
+    )?;
 
-    df.apply("column1", square)?;
+    let pivoted_df = pivot(
+        &df,
+        ["Sales"],
+        ["Quarter"],
+        ["Year"],
+        true,
+        Some(PivotAgg::Sum),
+        None,
+    )?;
 
     println!("{}", df);
+    println!("{}", pivoted_df);
     Ok(())
 }
