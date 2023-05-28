@@ -244,3 +244,45 @@ df.apply("column1", square)?;
   | Q2 | 330 | null |
 
   In this example, the unique values from the "Quarter" column become the column names in the pivoted DataFrame, with corresponding values from the "Sales" column.
+
+### Melt Operation
+
+- The melt operation in Polars is the inverse of the pivot operation. It allows you to transform wide-format data into long-format data.
+- With the melt operation, you can gather multiple columns into a single column, creating a key-value pair representation.
+- The melt operation requires two parameters: the id_vars, which are the columns to keep as identifiers, and the value_vars, which are the columns to melt.
+- Melt Operation Example: Suppose you have the following DataFrame `df` representing customer information:
+  | Customer | Gender | Age | Income |
+  | -------- | ------ | --- | ------ |
+  | Alice | Female | 25 | 50000 |
+  | Bob | Male | 30 | 60000 |
+  | Charlie | Male | 35 | 70000 |
+  To melt the DataFrame by keeping the "Customer" column as the identifier and melting the "Gender", "Age", and "Income" columns, you can use the melt operation:
+
+  ```rs
+  let df = df!(
+      "Customer" => ["Alice", "Bob", "Charlie"],
+      "Gender" => ["Female", "Male", "Male"],
+      "Age" => [25, 30, 35],
+      "Income" => [50000, 60000, 70000]
+  )?;
+
+  let melted_df = df.melt(&["Customer"], &["Gender", "Age", "Income"])?;
+
+  println!("{}", df);
+  println!("{}", melted_df);
+  ```
+
+The resulting melted DataFrame `melted_df` will look like this:
+| Customer | variable | value |
+| -------- | -------- | ------ |
+| Alice | Gender | Female |
+| Bob | Gender | Male |
+| Charlie | Gender | Male |
+| Alice | Age | 25 |
+| Bob | Age | 30 |
+| Charlie | Age | 35 |
+| Alice | Income | 50000 |
+| Bob | Income | 60000 |
+| Charlie | Income | 70000 |
+
+In this example, the columns "Gender", "Age", and "Income" are melted into a single column named "variable", and their corresponding values are captured in the "value" column.
