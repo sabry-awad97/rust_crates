@@ -6,16 +6,8 @@ fn main() -> Result<(), PolarsError> {
         .has_header(true)
         .finish()?;
 
-    let grouped_df = df
-        .clone()
-        .lazy()
-        .groupby(["Gender"])
-        .agg(&[
-            col("Age").alias("Age Count").count(),
-            col("Age").alias("Age Mean").mean(),
-        ])
-        .collect()?;
+    let sorted_df = df.sort(&["Age"], false)?;
 
-    println!("{}", grouped_df);
+    println!("{}", sorted_df);
     Ok(())
 }

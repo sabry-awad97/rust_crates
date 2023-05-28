@@ -101,3 +101,15 @@ let df = CsvReader::from_path("data.csv")?
       ])
       .collect()?;
   ```
+
+- This example groups the DataFrame by "column1" and calculates the sum of "column2" and the mean of "column3" for each group.
+
+### Sorting Data
+
+- To sort a DataFrame based on one or more columns, you can use the `sort` method:
+
+  ```rs
+  let sorted_df = df.sort(&["column1", "column2"], vec![false, true])?;
+  ```
+
+- This example sorts the DataFrame first by "column1" in ascending order and then by "column2" in descending order.
