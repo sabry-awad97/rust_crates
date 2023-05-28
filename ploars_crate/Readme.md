@@ -85,3 +85,19 @@ let df = CsvReader::from_path("data.csv")?
   ```
 
 - This example adds a new column "new_column" to the df.
+
+### Grouping and Aggregating Data
+
+- Polars supports grouping and aggregating data using the `groupby` and `select` methods:
+
+  ```rs
+  let grouped_df = df
+      .clone()
+      .lazy()
+      .groupby(["column1"])
+      .agg(&[
+          col("column2").alias("column2 count").count(),
+          col("column3").alias("column3 mean").mean(),
+      ])
+      .collect()?;
+  ```
