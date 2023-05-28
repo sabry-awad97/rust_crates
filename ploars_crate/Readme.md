@@ -96,8 +96,8 @@ let df = CsvReader::from_path("data.csv")?
       .lazy()
       .groupby(["column1"])
       .agg(&[
-          col("column2").alias("column2 count").count(),
-          col("column3").alias("column3 mean").mean(),
+          col("column2").count(),
+          col("column3").mean(),
       ])
       .collect()?;
   ```
@@ -161,9 +161,9 @@ let df_filled = df.with_column(column_filled)?;
 println!("DataFrame after filling nulls:\n{:?}", df_filled);
 ```
 
-## Applying Functions to Columns
+### Applying Functions to Columns
 
-### Applying a Closure
+#### Applying a Closure
 
 ```rs
 let mut df = DataFrame::new(vec![
@@ -174,7 +174,7 @@ let mut df = DataFrame::new(vec![
 df.apply("column1", |value| value * 2)?;
 ```
 
-### Applying a Predefined Function
+#### Applying a Predefined Function
 
 ```rs
 fn square(x: &Series) -> Series {
@@ -189,11 +189,11 @@ let mut df = DataFrame::new(vec![
 df.apply("column1", square)?;
 ```
 
-## Reshaping DataFrames
+### Reshaping DataFrames
 
 - Polars offers functions like pivot and melt for reshaping DataFrames.
 
-### Pivot Operation
+#### Pivot Operation
 
 - The pivot operation in Polars allows you to reshape a DataFrame by converting unique values from one column into multiple columns.
 - It is particularly useful when you want to transform long-format data into wide-format data.
@@ -245,7 +245,7 @@ df.apply("column1", square)?;
 
   In this example, the unique values from the "Quarter" column become the column names in the pivoted DataFrame, with corresponding values from the "Sales" column.
 
-### Melt Operation
+#### Melt Operation
 
 - The melt operation in Polars is the inverse of the pivot operation. It allows you to transform wide-format data into long-format data.
 - With the melt operation, you can gather multiple columns into a single column, creating a key-value pair representation.
@@ -287,7 +287,7 @@ The resulting melted DataFrame `melted_df` will look like this:
 
 In this example, the columns "Gender", "Age", and "Income" are melted into a single column named "variable", and their corresponding values are captured in the "value" column.
 
-## Data Type Conversion
+### Data Type Conversion
 
 Data Type Conversion refers to the process of changing the data type of a column in a DataFrame. Polars provides methods to convert the data types of DataFrame columns, allowing you to transform the data to a format that is suitable for your analysis or computations.
 
