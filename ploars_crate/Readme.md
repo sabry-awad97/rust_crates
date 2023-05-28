@@ -113,3 +113,29 @@ let df = CsvReader::from_path("data.csv")?
   ```
 
 - This example sorts the DataFrame first by "column1" in ascending order and then by "column2" in descending order.
+
+### Joining DataFrame
+
+- Polars allows you to join multiple DataFrames based on common columns using the `join` method:
+
+  ```rs
+  fn main() -> Result<(), PolarsError> {
+      let df1 = df!(
+          "ID" => &[1, 2, 3, 4],
+          "Name" => &["John", "Emma", "Adam", "Emily"],
+          "Department" => &["Digital Marketing", "Human Resources", "Finance", "Operations"]
+      )?;
+
+      let df2 = df!(
+          "ID" => &[1, 2, 3, 5],
+          "Salary" => &[5000, 4500, 6000, 5500]
+      )?;
+
+      let joined_df: DataFrame = df1.join(&df2, ["ID"], ["ID"], JoinType::Inner, None)?;
+
+      println!("{}", joined_df);
+      Ok(())
+  }
+  ```
+
+- This example performs an inner join between `df1` and `df2` on "ID" from the left DataFrame and "ID" from the right DataFrame.
