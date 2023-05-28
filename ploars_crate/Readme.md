@@ -303,3 +303,11 @@ let converted_df = df
 ```
 
 It's important to note that data type conversion may result in data loss or unexpected behavior if the conversion is not compatible or if the data contains values that cannot be converted. Therefore, it's recommended to handle data type conversion with caution and ensure that the conversion is appropriate for your data and analysis.
+
+### Renaming Columns
+
+- Polars allows you to rename columns using the alias method or by creating a new DataFrame with renamed columns.
+
+```rs
+col("column").alias("new_column");
+```
