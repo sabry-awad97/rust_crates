@@ -47,3 +47,11 @@ GET http://localhost:8000/not_found HTTP/1.1
 
 # Send a GET request to the "/hello/Sabry" URL pattern
 GET http://localhost:8000/hello/Sabry HTTP/1.1
+
+###
+
+# Send a POST request to to the form
+POST http://localhost:8000/submit
+Content-Type: application/x-www-form-urlencoded
+
+name=Sabry&email=dr.sabry1997@gmail.com

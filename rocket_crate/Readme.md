@@ -401,3 +401,75 @@ fn rocket() -> _ {
 ```
 
 We wrap the HTML string in the `RawHtml` type and return it as the response. The `RawHtml` type indicates to Rocket that the response should be treated as HTML content.
+
+## Working with Forms
+
+Forms are a fundamental component of web applications that allow users to input data and submit it to the server for processing. In the context of web development, forms are commonly used for user registration, data submission, search functionality, and more.
+
+Rocket provides convenient features for handling form data, validating inputs, and processing form submissions.
+
+Let's explore the steps involved in working with forms in Rocket:
+
+Define the HTML Form:
+
+1. Define the HTML Form:
+   Start by creating an HTML form in your template. The form should include input fields for users to enter data and a submit button to trigger the form submission. Specify the appropriate HTTP method (`POST`, `GET`, etc.) and the action URL that the form should be submitted to.
+
+   ```html
+   <form action="/submit" method="post">
+     <label for="name">Name:</label>
+     <input type="text" id="name" name="name" required />
+
+     <label for="email">Email:</label>
+     <input type="email" id="email" name="email" required />
+
+     <input type="submit" value="Submit" />
+   </form>
+   ```
+
+2. Define the Route Handler:
+   Create a route handler in Rocket to handle the form submission. This handler will be responsible for receiving the form data, performing any necessary validation, and processing the submitted data.
+
+   ```rs
+   #[post("/submit", data = "<form_data>")]
+   fn submit_form(form_data: rocket::request::Form<User>) -> String {
+       // Access form data using form_data
+       // Perform validation and process the submitted data
+
+       format!("Hello, {}! Your email ({}) has been submitted.", form_data.name, form_data.email)
+   }
+   ```
+
+3. Define the Form Data Struct:
+
+   ```rs
+   #[derive(FromForm)]
+   struct User {
+       name: String,
+       email: String,
+   }
+   ```
+
+4. Mount the Route:
+   In the rocket() function, mount the route handler by adding the following line:
+
+   ```rs
+   // Launch the Rocket web application
+   #[launch]
+   fn rocket() -> _ {
+       rocket::build()
+           // Mount the defined routes to the root URL
+           .mount("/", routes![submit_form])
+   }
+   ```
+
+5. Accessing Form Data:
+   Inside the route handler, you can access the submitted form data through the `form_data` parameter.
+
+6. Form Validation and Data Processing:
+   Perform any necessary validation on the form data to ensure that it meets your requirements. You can validate the inputs, sanitize the data, interact with databases, or perform any other processing tasks as needed.
+
+7. Return a Response:
+   Finally, return an appropriate response from the route handler. This could be a success message, a redirect, or an error message depending on the result of form processing.
+
+By following these steps, you can easily handle form submissions in Rocket. You can expand on this example by adding additional fields, implementing form validation logic, or integrating with databases to store form data.
