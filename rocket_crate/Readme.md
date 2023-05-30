@@ -150,3 +150,13 @@ fn rocket() -> _ {
     )
 }
 ```
+
+In this example:
+
+- The `index` function handles a GET request to the root URL ("/") and returns the string "Hello, World!" as the response.
+- The `get_user` function handles a GET request to the "/users/&lt;id&gt;" endpoint, where `<id>` is a dynamic path parameter. It takes the `id` as a parameter and returns a formatted string.
+- The `create_user` function handles a POST request to the "/users" endpoint. It takes the `user_data` as a parameter, which represents the request body, and returns a formatted string.
+- The `update_user` function handles a PUT request to the "/users/&lt;id&gt;" endpoint. It takes the `id` and `user_data` as parameters and returns a formatted string.
+- The `delete_user` function handles a DELETE request to the "/users/&lt;id&gt;" endpoint. It takes the `id` as a parameter and returns a formatted string.
+
+With these route handlers defined, Rocket will handle incoming requests and route them to the appropriate functions based on the requested route and HTTP method.
