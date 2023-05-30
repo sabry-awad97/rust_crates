@@ -1,0 +1,26 @@
+# Set the host and port variables
+@host = localhost
+@port = 8000
+
+# Construct the URL using the host and port variables
+@url = http://{{host}}:{{port}}
+
+###
+
+# Send a GET request to the specified URL to retrieve data
+GET {{url}} HTTP/1.1
+
+###
+
+# Send a POST request to the specified URL to log in or submit login credentials
+POST {{url}}/login HTTP/1.1
+
+###
+
+# Send a PUT request to the specified URL to update user information for user ID 10
+PUT {{url}}/users/10 HTTP/1.1
+
+###
+
+# Send a DELETE request to the specified URL to delete user data for user ID 10
+DELETE {{url}}/users/10 HTTP/1.1

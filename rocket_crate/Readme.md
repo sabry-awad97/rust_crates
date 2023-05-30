@@ -69,3 +69,53 @@ To start working with Rocket, you'll need to follow these steps to install and s
    ```
 
    This will start the Rocket server, and you can access your application in your browser at `http://localhost:8000`.
+
+## Routing and Handling Requests
+
+### Understanding HTTP methods (GET, POST, PUT, DELETE) and routes
+
+In web development, routing refers to the process of mapping incoming HTTP requests to specific actions or handlers in your web application. Routes define the URLs or endpoints that clients can access to interact with your application.
+
+HTTP Methods:
+
+HTTP defines several methods or verbs that indicate the type of action to be performed on a resource. The most commonly used HTTP methods are:
+
+1. GET: The GET method is used to retrieve a resource from the server. When a client sends a GET request to a specific URL, it expects the server to return the requested resource, such as a web page or JSON data.
+
+1. POST: The POST method is used to send data to the server, typically for creating or updating a resource. When a client sends a POST request, the server processes the data and performs the necessary actions based on the request payload.
+
+1. PUT: The PUT method is used to update a resource on the server. It sends the entire representation of the resource to be updated. If the resource doesn't exist, the server may create it.
+
+1. DELETE: The DELETE method is used to delete a resource on the server. When a client sends a DELETE request to a specific URL, the server removes the corresponding resource.
+
+Routes:
+
+Routes define the URL patterns that clients can access to interact with your web application. In Rocket, you can define routes using attributes and associate them with specific request handlers. Here's an example:
+
+```rs
+#[get("/")]
+fn index() -> &'static str {
+    "Hello, World!"
+}
+
+#[post("/login")]
+fn login() -> &'static str {
+    "Login endpoint"
+}
+
+#[put("/users/<id>")]
+fn update_user(id: usize) -> String {
+    format!("Updating user with ID: {}", id)
+}
+
+#[delete("/users/<id>")]
+fn delete_user(id: usize) -> String {
+    format!("Deleting user with ID: {}", id)
+}
+
+#[launch]
+fn rocket() -> _ {
+    rocket::build()
+        .mount("/", routes![index, login, update_user, delete_user])
+}
+```
