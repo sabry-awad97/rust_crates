@@ -160,3 +160,89 @@ In this example:
 - The `delete_user` function handles a DELETE request to the "/users/&lt;id&gt;" endpoint. It takes the `id` as a parameter and returns a formatted string.
 
 With these route handlers defined, Rocket will handle incoming requests and route them to the appropriate functions based on the requested route and HTTP method.
+
+### Implementing request handling logic
+
+When handling requests in Rocket, you can access various components of the request, such as path parameters, query parameters, headers, and request bodies. Additionally, you can generate appropriate responses to send back to the client.
+
+```rs
+#[macro_use]
+extern crate rocket;
+
+use rocket::http::Status;
+use rocket::request::{self, FromRequest, Request};
+use rocket::response::status;
+use rocket::serde::json::{json, Value};
+use rocket::tokio::time::{sleep, Duration};
+
+// Define a route handler for the "/delay/<seconds>" URL pattern
+#[get("/delay/<seconds>")]
+async fn delay(seconds: u64) -> String {
+    sleep(Duration::from_secs(seconds)).await; // Asynchronously wait for the specified duration
+    format!("Delayed response for {} seconds", seconds) // Format a response string indicating the delay
+}
+
+// Define a struct to represent authorization information
+#[derive(Debug)]
+struct Authorization {
+    token: String,
+}
+
+// Implement the FromRequest trait to extract authorization token from request headers
+#[rocket::async_trait]
+impl<'r> FromRequest<'r> for Authorization {
+    type Error = ();
+
+    async fn from_request(req: &'r Request<'_>) -> request::Outcome<Self, Self::Error> {
+        // Get the "Authorization" header value
+        let token = req.headers().get_one("Authorization").unwrap_or_default();
+        if token.starts_with("Bearer ") {
+            // Remove the "Bearer " prefix from the token to get the actual token
+            let token = token.strip_prefix("Bearer ").unwrap_or(token);
+            return request::Outcome::Success(Authorization {
+                // Create an Authorization instance with the extracted token
+                token: token.to_string(),
+            });
+        }
+        // Return an unauthorized status if the token is invalid
+        request::Outcome::Failure((Status::Unauthorized, ()))
+    }
+}
+
+// Define a route handler for the "/protected" URL pattern that requires authorization
+#[get("/protected")]
+fn protected_route(auth: Authorization) -> status::Custom<Value> {
+    status::Custom(
+        // Use a success status code
+        Status::Ok,
+        json!({
+            "message": "Access granted",
+            // Include the extracted token in the JSON response
+            "token": auth.token
+        }),
+    )
+}
+
+// Define a catcher for the 404 status code
+#[catch(404)]
+fn not_found() -> &'static str {
+    "404 - Not Found" // Return a static string indicating the resource was not found
+}
+
+// Launch the Rocket web application
+#[launch]
+fn rocket() -> _ {
+    rocket::build()
+        .mount("/", routes![delay, protected_route]) // Mount the defined routes to the root URL
+        .register("/", catchers![not_found]) // Register the not_found catcher for handling 404 errors
+}
+```
+
+In this example:
+
+- The `delay` function demonstrates handling an asynchronous request using the `async` keyword. It introduces an artificial delay using `tokio::time::sleep` to simulate a slow response.
+- The `Authorization` struct and `protected_route` function showcase implementing request guarding or authentication.
+- The `FromRequest` trait is implemented for `Authorization` to allow Rocket to extract the authorization token from the request headers. The `from_request` function checks if the token starts with "Bearer " and removes the prefix if present. It returns an `Outcome::Success` with an `Authorization` instance containing the extracted token if successful. Otherwise, it returns an `Outcome::Failure` with an unauthorized status code.
+- The `protected_route` function is a route handler for the "/protected" URL pattern that requires authorization. It takes an `auth` parameter of type `Authorization`, indicating that this route requires a valid authorization token. It returns a `status::Custom` response with a success status code and a JSON payload indicating access granted with the token.
+- The `not_found` function acts as a catcher-all for the 404 status code. If a route is not found, this function is invoked and returns a static string "404 - Not Found".
+- Finally, the `rocket` function is the entry point of the Rocket application. It builds a Rocket instance using `rocket::build()`, mounts the defined routes (delay, protected_route) to the root URL ("/"), and registers the `not_found` catcher to handle 404 errors.

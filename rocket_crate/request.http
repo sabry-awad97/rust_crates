@@ -26,3 +26,19 @@ Sabry
 
 # Send a DELETE request to delete user data with ID 10
 DELETE http://localhost:8000/users/10 HTTP/1.1
+
+###
+
+# Send a GET request to the "/delay/2" URL pattern
+GET http://localhost:8000/delay/2 HTTP/1.1
+
+###
+
+# Send a GET request to the "/protected" URL pattern with an authorization token
+GET http://localhost:8000/protected HTTP/1.1
+Authorization: Bearer your_token_here
+
+###
+
+# Send a GET request to the "/not_found" URL pattern
+GET http://localhost:8000/not_found HTTP/1.1
