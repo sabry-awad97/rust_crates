@@ -42,3 +42,8 @@ Authorization: Bearer your_token_here
 
 # Send a GET request to the "/not_found" URL pattern
 GET http://localhost:8000/not_found HTTP/1.1
+
+###
+
+# Send a GET request to the "/hello/Sabry" URL pattern
+GET http://localhost:8000/hello/Sabry HTTP/1.1

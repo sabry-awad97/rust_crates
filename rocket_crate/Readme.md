@@ -280,3 +280,79 @@ Here's an overview of how templating and views work in web development:
 Popular template engines in web development include Handlebars, EJS (Embedded JavaScript), Jinja2, and Django Templates, among others. Each template engine has its own syntax and features, but they all follow the general principles outlined above.
 
 By utilizing templating and views in web development, you can separate the concerns of data and presentation, making your code more maintainable, modular, and reusable.
+
+### Using Rocket 's built-in templating engine
+
+Rocket provides a powerful templating engine called `Tera` that you can use to render dynamic views in your web application. Tera is a flexible and feature-rich template engine that supports variables, conditionals, loops, macros, and more.
+
+To use the `Tera` template engine in your Rocket application, follow these steps:
+
+1. Add the necessary dependencies: In your `Cargo.toml` file, add the `rocket_dyn_templates` dependency:
+
+   ```toml
+   [dependencies.rocket_dyn_templates]
+   version = "=0.1.0-rc.3"
+   features = ["tera"]
+   ```
+
+2. Import the necessary modules: In your Rust file, import the required modules:
+
+   ```rs
+   #[macro_use]
+   extern crate rocket;
+
+   use rocket_dyn_templates::{Template, context};
+   ```
+
+3. Define your templates: Create your template files with the desired HTML structure and placeholders for dynamic content. Place these template files in a directory called `templates` at the root of your project.
+
+   For example, let's create a template file named `hello.tera` with the following content:
+
+   ```html
+   <!DOCTYPE html>
+   <html>
+     <head>
+       <title>Hello, {{ name }}!</title>
+     </head>
+     <body>
+       <h1>Hello, {{ name }}!</h1>
+     </body>
+   </html>
+   ```
+
+4. Define a route handler: Create a route handler in Rocket to handle the request and render the template. Here's an example that renders the `hello.tera` template:
+
+   ```rs
+   // Define a route handler for the "/hello/<name>" URL pattern
+   #[get("/hello/<name>")]
+   fn hello(name: String) -> Template {
+       // Render the "hello" template with the provided name as context
+       Template::render("hello", context! { name: &name })
+   }
+   ```
+
+5. Mount the template engine: In the `rocket()` function, mount the `Tera` template engine by adding the following line:
+
+   ```rs
+   // Launch the Rocket web application
+   #[launch]
+   fn rocket() -> _ {
+       rocket::build()
+           // Attach the Template fairing to enable template support
+           .attach(Template::fairing())
+           // Mount the defined routes to the root URL
+           .mount("/", routes![hello])
+   }
+   ```
+
+With these steps, you have integrated Rocket's built-in templating engine into your Rust web application.
+
+When a user accesses the `/hello/<name>` route, the `hello` route handler will be invoked. It creates a `Context` object, inserts the `name` parameter into the context, and then renders the `hello` template with the context data. The rendered HTML is returned as the response.
+
+The `Template::fairing()` line in the `rocket()` function attaches the `Tera` template engine as a fairing to your Rocket application, enabling the rendering of templates.
+
+In the context of the Rocket web framework in Rust, a "Template fairing" refers to a component or middleware that enables template support within the application. Fairings in Rocket are used to modify or enhance the application's behavior globally, applying to all routes and requests.
+
+The Template fairing specifically allows the application to work with templates, which are files containing dynamic content that can be rendered and populated with data. Templates are commonly used for generating HTML pages or other types of dynamically generated content.
+
+By attaching the Template fairing using the `.attach(Template::fairing())` method in the Rocket application setup, the application gains the ability to render and use templates. This fairing integrates a templating engine into the Rocket framework, allowing the application to load, render, and serve template files, making it easier to generate dynamic content and respond to requests with dynamically generated HTML or other formats.
