@@ -1,13 +1,21 @@
 #[macro_use]
 extern crate rocket;
 
-use rocket_dyn_templates::{context, Template};
+use rocket::serde::Serialize;
+use rocket_dyn_templates::Template;
+
+#[derive(Serialize)]
+struct User {
+    name: String,
+}
 
 // Define a route handler for the "/hello/<name>" URL pattern
 #[get("/hello/<name>")]
 fn hello(name: String) -> Template {
+    // Create a User instance
+    let user = User { name };
     // Render the "hello" template with the provided name as context
-    Template::render("hello", context! { name })
+    Template::render("hello", &user)
 }
 
 // Launch the Rocket web application
