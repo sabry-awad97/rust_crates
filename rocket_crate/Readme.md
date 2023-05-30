@@ -246,3 +246,37 @@ In this example:
 - The `protected_route` function is a route handler for the "/protected" URL pattern that requires authorization. It takes an `auth` parameter of type `Authorization`, indicating that this route requires a valid authorization token. It returns a `status::Custom` response with a success status code and a JSON payload indicating access granted with the token.
 - The `not_found` function acts as a catcher-all for the 404 status code. If a route is not found, this function is invoked and returns a static string "404 - Not Found".
 - Finally, the `rocket` function is the entry point of the Rocket application. It builds a Rocket instance using `rocket::build()`, mounts the defined routes (delay, protected_route) to the root URL ("/"), and registers the `not_found` catcher to handle 404 errors.
+
+## Templating and Views
+
+### Introduction to templating and views in web development
+
+In web development, templating refers to the practice of separating the structure of a web page from its content. Templating allows you to define reusable components and dynamically generate web pages by filling in the content with data.
+
+The purpose of using templates is to improve code organization, promote code reuse, and simplify the process of generating dynamic HTML pages. Templates provide a convenient way to separate the presentation layer from the underlying logic.
+
+Views, in the context of web development, are the representation of data and logic within a specific template. Views contain the information necessary to render a template with the appropriate data values.
+
+Here's an overview of how templating and views work in web development:
+
+1. Template Engines:
+   Template engines are libraries or frameworks that provide tools and syntax for defining templates and rendering them with data. They typically support variables, conditionals, loops, and other control structures.
+
+1. Template Files:
+   Templates are usually stored in separate files, often with a specific file extension (e.g., .html, .ejs, .hbs). These files contain the HTML structure with placeholders or tags where dynamic data will be inserted.
+
+1. Placeholder Tags:
+   Within the template files, placeholder tags are used to mark the locations where dynamic content will be injected. These tags are specific to the template engine being used.
+
+1. View Data:
+   Views hold the data that will be passed into the template for rendering. The data can come from various sources, such as a database, API, or user input. Views are typically represented as objects or dictionaries.
+
+1. Rendering:
+   Rendering refers to the process of combining the template with the view data to generate the final HTML output. The template engine takes the template file, replaces the placeholder tags with the actual data values from the view, and produces the rendered HTML.
+
+1. Dynamic Content:
+   By dynamically populating the template with different view data, you can generate personalized and context-specific content for each user or situation. This allows for the creation of dynamic web pages that adapt to the changing data and requirements.
+
+Popular template engines in web development include Handlebars, EJS (Embedded JavaScript), Jinja2, and Django Templates, among others. Each template engine has its own syntax and features, but they all follow the general principles outlined above.
+
+By utilizing templating and views in web development, you can separate the concerns of data and presentation, making your code more maintainable, modular, and reusable.
