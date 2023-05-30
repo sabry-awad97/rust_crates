@@ -54,4 +54,4 @@ GET http://localhost:8000/hello/Sabry HTTP/1.1
 POST http://localhost:8000/submit
 Content-Type: application/x-www-form-urlencoded
 
-name=Sabry&email=dr.sabry1997@gmail.com
+name=Sabry&age=26

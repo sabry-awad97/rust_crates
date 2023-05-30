@@ -1,55 +1,55 @@
 #[macro_use]
 extern crate rocket;
 
-use rocket::{form::Form, response::content::RawHtml};
+use rocket::form::Form;
+use rocket::response::content::RawHtml;
 
+// Define a struct to represent the form data
 #[derive(FromForm)]
-struct User {
+struct UserForm {
     name: String,
-    email: String,
+    age: u32,
 }
 
+// Define a route handler for the root URL ("/")
 #[get("/")]
 fn index() -> RawHtml<String> {
-    // Generate an HTML string with the user data
-    let html = format!(
-        r#"<!DOCTYPE html>
-            <html>
+    // Render the HTML form
+    let html = r#"
+        <html>
             <head>
-                <title>Dynamic Web Page</title>
+                <title>Form Example</title>
             </head>
             <body>
-                <form action="/submit" method="post">
+                <h1>Submit User Data</h1>
+                <form method="post" action="/submit">
                     <label for="name">Name:</label>
-                    <input type="text" id="name" name="name" required />
-            
-                    <label for="email">Email:</label>
-                    <input type="email" id="email" name="email" required />
-            
-                    <input type="submit" value="Submit" />
+                    <input type="text" id="name" name="name" required>
+                    <br>
+                    <label for="age">Age:</label>
+                    <input type="number" id="age" name="age" required>
+                    <br>
+                    <input type="submit" value="Submit">
                 </form>
             </body>
-            </html>"#,
-    );
+        </html>
+    "#;
 
-    RawHtml(html)
+    // Wrap the HTML string in the `RawHtml` type and return it as the response
+    RawHtml(html.to_string())
 }
 
-#[post("/submit", data = "<form_data>")]
-fn submit_form(form_data: Form<User>) -> String {
-    // Access form data using form_data
-    // Perform validation and process the submitted data
+// Define a route handler for form submission
+#[post("/submit", data = "<user_form>")]
+fn submit(user_form: Form<UserForm>) -> String {
+    // Access the form data from the `user_form` parameter
+    let name = &user_form.name;
+    let age = user_form.age;
 
-    format!(
-        "Hello, {}! Your email ({}) has been submitted.",
-        form_data.name, form_data.email
-    )
+    format!("Submitted data: Name - {}, Age - {}", name, age)
 }
 
-// Launch the Rocket web application
 #[launch]
 fn rocket() -> _ {
-    rocket::build()
-        // Mount the defined routes to the root URL
-        .mount("/", routes![index, submit_form])
+    rocket::build().mount("/", routes![index, submit])
 }
