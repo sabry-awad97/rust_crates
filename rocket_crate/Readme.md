@@ -90,32 +90,63 @@ HTTP defines several methods or verbs that indicate the type of action to be per
 
 Routes:
 
-Routes define the URL patterns that clients can access to interact with your web application. In Rocket, you can define routes using attributes and associate them with specific request handlers. Here's an example:
+Routes define the URL patterns that clients can access to interact with your web application. In Rocket, you can define routes using attributes and associate them with specific request handlers.
+
+### Creating route handlers in Rocket
+
+Route handlers are functions that define the behavior and response for a specific route or URL endpoint. These handlers are responsible for processing incoming requests and generating appropriate responses.
+
+To create a route handler in Rocket, follow these steps:
+
+1. Declare the handler function: Define a function that will handle the desired route. This function can have parameters to extract information from the incoming request, such as path parameters, query parameters, or request bodies.
+
+1. Add the appropriate attribute: Use Rocket's attributes to specify the HTTP method and route pattern associated with the handler function. Rocket provides attributes like `#[get("/")], #[post("/")], #[put("/")], #[delete("/")]`, and more.
+
+1. Define the handler logic: Write the logic inside the handler function to process the request and generate the desired response. This can include database operations, calling external APIs, rendering templates, or any other business logic specific to your application.
+
+Here's an example that demonstrates creating route handlers in Rocket:
 
 ```rs
+// Import the Rocket framework
+#[macro_use]
+extern crate rocket;
+
+// Define a route handler for the root URL "/"
 #[get("/")]
 fn index() -> &'static str {
-    "Hello, World!"
+    "Hello, World!" // Return a static string as the response
 }
 
-#[post("/login")]
-fn login() -> &'static str {
-    "Login endpoint"
+// Define a route handler for the "/users/<id>" URL pattern
+#[get("/users/<id>")]
+fn get_user(id: usize) -> String {
+    format!("Fetching user with ID: {}", id) // Format a response string with the provided ID
 }
 
-#[put("/users/<id>")]
-fn update_user(id: usize) -> String {
-    format!("Updating user with ID: {}", id)
+// Define a route handler for the "/users" URL pattern with a POST method
+#[post("/users", data = "<user_data>")]
+fn create_user(user_data: String) -> String {
+    format!("Creating user with data: {}", user_data) // Format a response string with the provided user data
 }
 
+// Define a route handler for the "/users/<id>" URL pattern with a PUT method
+#[put("/users/<id>", data = "<user_data>")]
+fn update_user(id: usize, user_data: String) -> String {
+    format!("Updating user with ID {} and data: {}", id, user_data) // Format a response string with the provided ID and user data
+}
+
+// Define a route handler for the "/users/<id>" URL pattern with a DELETE method
 #[delete("/users/<id>")]
 fn delete_user(id: usize) -> String {
-    format!("Deleting user with ID: {}", id)
+    format!("Deleting user with ID: {}", id) // Format a response string with the provided ID
 }
 
+// Launch the Rocket web application
 #[launch]
 fn rocket() -> _ {
-    rocket::build()
-        .mount("/", routes![index, login, update_user, delete_user])
+    rocket::build().mount(
+        "/",
+        routes![index, get_user, create_user, update_user, delete_user], // Mount the defined routes to the root URL
+    )
 }
 ```
